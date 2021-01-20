@@ -81,7 +81,7 @@ namespace SRTS
             Find.WorldSelector.ClearSelection();
             int tile = this.parent.Map.Tile;
 
-            Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTargetToBomb), false, Tex2D.LauncherTargeting, true, delegate
+            Find.WorldTargeter.BeginTargeting_NewTemp(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTargetToBomb), false, Tex2D.LauncherTargeting, true, delegate
             {
                 GenDraw.DrawWorldRadiusRing(tile, CompLauncher.MaxLaunchDistance);
             }, delegate (GlobalTargetInfo target)

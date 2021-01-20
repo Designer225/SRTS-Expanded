@@ -148,6 +148,24 @@ namespace SRTS
                 }
             }
         }
+
+        // whether the world object is a space site - either an orbiting ship or a ship or a space site
+        public static bool IsSpaceSite(this WorldObject worldObject)
+        {
+            return SOS2ModLoaded && worldObject != null && (worldObject.GetType().IsAssignableFrom(WorldObjectOrbitingShipType) || worldObject.GetType().IsAssignableFrom(SpaceSiteType));
+        }
+
+        // whether the world object is a non-player space site - either an enemy ship or a space site
+        public static bool IsNonPlayerSpaceSite(this WorldObject worldObject)
+        {
+            return SOS2ModLoaded && worldObject != null && (worldObject.GetType().IsAssignableFrom(SpaceSiteType) || worldObject.def == ShipEnemy);
+        }
+
+        // whether the world object is a player ship
+        public static bool IsPlayerShip(this WorldObject worldObject)
+        {
+            return SOS2ModLoaded && worldObject != null && (worldObject.def == ShipOrbiting);
+        }
         
         public static Dictionary<ThingDef, ResearchProjectDef> srtsDefProjects = new Dictionary<ThingDef, ResearchProjectDef>();
 
@@ -156,10 +174,18 @@ namespace SRTS
         public static Type CompProperties_ExplosiveCE { get; set; }
         public static Type CompExplosiveCE { get; set; }
 
-
+        // SOS2 Compatibility
         public static bool SOS2ModLoaded = false;
-        public static WorldObjectDef SpaceSite { get; set; }
+
+        // SiteSpace WorldObjectDef and SpaceSite worldObjectClass
+        public static WorldObjectDef SiteSpace { get; set; }
         public static Type SpaceSiteType { get; set; }
+
+        // ShipOrbiting (player ships) and ShipEnemy (enemy ships) WorldObjectDefs, and also WorldObjectOrbitingShip worldObjectClass
+        public static WorldObjectDef ShipOrbiting { get; set; }
+        public static WorldObjectDef ShipEnemy { get; set; }
+        public static Type WorldObjectOrbitingShipType { get; set; }
+
         public static Type SOS2LaunchableType { get; set; }
     }
 }

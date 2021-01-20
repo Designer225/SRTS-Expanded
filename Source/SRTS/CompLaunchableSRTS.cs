@@ -307,16 +307,16 @@ namespace SRTS
             /* SOS2 Compatibility Section */
             if(SRTSHelper.SOS2ModLoaded)
             {
-                if (this.parent.Map.Parent.def.defName == "ShipOrbiting")
+                if (this.parent.Map.Parent.IsPlayerShip())
                 {
-                    Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
+                    Find.WorldTargeter.BeginTargeting_NewTemp(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                     {
                         if (!target.IsValid || this.parent.TryGetComp<CompRefuelable>() == null || this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax == 1.0f)
                         {
                             return null;
                         }
 
-                        if (target.WorldObject != null && target.WorldObject.GetType().IsAssignableFrom(SRTSHelper.SpaceSiteType))
+                        if (target.WorldObject.IsSpaceSite())
                         {
                             /*if (this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax >= ((SRTSHelper.SpaceSite.worldObjectClass)target.WorldObject).fuelCost / 100f)
                                 return null;
@@ -326,11 +326,11 @@ namespace SRTS
                         return "MessageShuttleMustBeFullyFueled".Translate();
                     });
                 }
-                else if (this.parent.Map.Parent.GetType().IsAssignableFrom(SRTSHelper.SpaceSiteType))
+                else if (this.parent.Map.Parent.IsNonPlayerSpaceSite())
                 {
-                    Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
+                    Find.WorldTargeter.BeginTargeting_NewTemp(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                     {
-                        if (target.WorldObject == null || (!(target.WorldObject.def == SRTSHelper.SpaceSite) && !(target.WorldObject.def.defName == "ShipOrbiting")))
+                        if (!target.WorldObject.IsSpaceSite())
                         {
                             return "MessageOnlyOtherSpaceSites".Translate();
                         }
@@ -342,7 +342,7 @@ namespace SRTS
                 }
             }
             /* -------------------------- */
-	        Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, (() => GenDraw.DrawWorldRadiusRing(tile, this.MaxLaunchDistance)), (target =>
+	        Find.WorldTargeter.BeginTargeting_NewTemp(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, (() => GenDraw.DrawWorldRadiusRing(tile, this.MaxLaunchDistance)), (target =>
 	        {
 		        if (!target.IsValid)
 		            return null;
@@ -355,7 +355,7 @@ namespace SRTS
 		            return "TransportPodNotEnoughFuel".Translate();
 		        }
 
-                if( target.WorldObject?.def?.defName == "ShipOrbiting" || (target.WorldObject?.GetType()?.IsAssignableFrom(SRTSHelper.SpaceSiteType) ?? false))
+                if (target.WorldObject.IsSpaceSite())
                 {
                     return null;
                 }
@@ -386,7 +386,7 @@ namespace SRTS
 	          Find.WorldSelector.ClearSelection();
 	          int tile = car.Tile;
 	          this.carr = car;
-	          Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompLaunchableSRTS.TargeterMouseAttachment, false, (Action) (() => GenDraw.DrawWorldRadiusRing(car.Tile, this.MaxLaunchDistance)), (Func<GlobalTargetInfo, string>) (target =>
+	          Find.WorldTargeter.BeginTargeting_NewTemp(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompLaunchableSRTS.TargeterMouseAttachment, false, (Action) (() => GenDraw.DrawWorldRadiusRing(car.Tile, this.MaxLaunchDistance)), (Func<GlobalTargetInfo, string>) (target =>
 	          {
 		            if (!target.IsValid)
 		                return (string) null;
@@ -434,12 +434,12 @@ namespace SRTS
 		        Messages.Message("MessageTransportPodsDestinationIsTooFar".Translate(CompLaunchableSRTS.FuelNeededToLaunchAtDist((float) num, this.BaseFuelPerTile).ToString("0.#")), MessageTypeDefOf.RejectInput, false);
 		        return false;
 	        }
-	        if( (Find.WorldGrid[target.Tile].biome.impassable || Find.World.Impassable(target.Tile)) && (!SRTSHelper.SOS2ModLoaded || target.WorldObject?.def?.defName != "ShipOrbiting"))
+	        if( (Find.WorldGrid[target.Tile].biome.impassable || Find.World.Impassable(target.Tile)) && !target.WorldObject.IsSpaceSite())
 	        {
                 Messages.Message("MessageTransportPodsDestinationIsInvalid".Translate(), MessageTypeDefOf.RejectInput, false);
 		        return false;
 	        }
-            if(SRTSHelper.SOS2ModLoaded && target.WorldObject?.def?.defName == "ShipOrbiting")
+            if(target.WorldObject.IsPlayerShip())
             {
                 if (!SRTSMod.GetStatFor<bool>(this.parent.def.defName, StatName.spaceFaring))
                 {

@@ -24,8 +24,9 @@ namespace SRTS
         private static void ModCompatibilityInitialized()
         {
             List<ModMetaData> mods = ModLister.AllInstalledMods.ToList();
-            Log.Warning("[SRTS Expanded] Compatibility with Save our Ship 2 and Combat Extended are temporarily disabled at the moment. SoS2 compatibility will happen soon(ish), CE compatibility will not.");
-            /*foreach(ModMetaData mod in mods)
+            //Log.Warning("[SRTS Expanded] Compatibility with Save our Ship 2 and Combat Extended are temporarily disabled at the moment. SoS2 compatibility will happen soon(ish), CE compatibility will not.");
+            Log.Warning("[SRTS Expanded] Compatibility with Combat Extended is temporarily disabled at the moment. Compatibility with Save Our Ship 2 is currently experimental.");
+            /*foreach (ModMetaData mod in mods)
             {
                 if(ModLister.HasActiveModWithName(mod.Name) && mod.PackageId == "1631756268" && !SRTSHelper.CEModLoaded)
                 {
@@ -38,20 +39,23 @@ namespace SRTS
                     SRTSHelper.CompProperties_ExplosiveCE = AccessTools.TypeByName("CompProperties_ExplosiveCE");
                     SRTSHelper.CompExplosiveCE = AccessTools.TypeByName("CompExplosiveCE");
                 }
-                if(ModLister.HasActiveModWithName(mod.Name) && mod.PackageId == "1909914131" && !SRTSHelper.SOS2ModLoaded)
-                {
-                    Log.Message("[SRTS Expanded] Initializing SoS2 Compatibility Patch.");
-                    SRTSHelper.SpaceSite = DefDatabase<WorldObjectDef>.GetNamed("SiteSpace");
-                    SRTSHelper.SpaceSiteType = AccessTools.TypeByName("SpaceSite");
-                    SRTSHelper.SOS2LaunchableType = AccessTools.TypeByName("CompShuttleLaunchable");
-                    SRTSHelper.SOS2ModLoaded = true;
-                }
             }
             if(SRTSMod.mod.settings.CEPreviouslyInitialized && !SRTSHelper.CEModLoaded)
             {
                 SRTSMod.mod.settings.CEPreviouslyInitialized = false;
                 SRTSMod.mod.ResetBombList();
             }*/
+            if (ModLister.HasActiveModWithName("Save Our Ship 2"))
+            {
+                Log.Message("[SRTS Expanded] Initializing SOS2 Compatibility Patch.");
+                SRTSHelper.SiteSpace = DefDatabase<WorldObjectDef>.GetNamed("SiteSpace");
+                SRTSHelper.SpaceSiteType = AccessTools.TypeByName("SpaceSite");
+                SRTSHelper.ShipOrbiting = DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting");
+                SRTSHelper.ShipEnemy = DefDatabase<WorldObjectDef>.GetNamed("ShipEnemy");
+                SRTSHelper.WorldObjectOrbitingShipType = AccessTools.TypeByName("WorldObjectOrbitingShip");
+                SRTSHelper.SOS2LaunchableType = AccessTools.TypeByName("CompShuttleLaunchable");
+                SRTSHelper.SOS2ModLoaded = true;
+            }
         }
     }
 }
